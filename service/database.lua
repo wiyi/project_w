@@ -14,19 +14,19 @@ end
 
 --MODULE相关------------------------------------------
 local MODULE = {}
+
+local function module_init (name, mod)
+        MODULE[name] = mod
+        mod.init (get_conn)
+end
 --init
 local function init()
 	local count = #config.tables
-	local table = ""
+	local table
 	for i = 1, count do
 		table = config.tables[i]
 		module_init (table.name, require(table.path))
 	end
-end
-
-local function module_init (name, mod)
-	MODULE[name] = mod
-	mod.init (get_conn)
 end
 
 local traceback = debug.traceback
