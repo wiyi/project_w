@@ -13,7 +13,7 @@ local centerdb =
 
 config.tables = 
 {
-	{module = "account", path = "db.account", conn_id = 1, format_key = "acc:%s"}
+	{name = "account", path = "db.account", conn_id = 1, format_key = "acc:%s"}
 }
 
 local count = 1
