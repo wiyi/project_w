@@ -19,8 +19,8 @@ local function init()
 	local count = #config.tables
 	local table = ""
 	for i = 1, count do
-		tname = config.tables[i]
-		module_init (tname, require string.format("db.%s",tname))
+		table = config.tables[i]
+		module_init (table.name, require table.path)
 	end
 end
 
