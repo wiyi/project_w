@@ -43,7 +43,7 @@ skynet : skynet/Makefile
 	cp 3rd/skynet/skynet-src/skynet_socket.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0755 3rd/skynet/skynet $(BUILD_BIN_DIR)/skynet
 	cp -r 3rd/skynet/service/* $(BUILD_SERVICE_DIR)
-	cp -r 3rd/skynet/service-src/* $(BUILD_CSERVICE_DIR)
+	cp -r 3rd/skynet/cservice/* $(BUILD_CSERVICE_DIR)
 	cp -r 3rd/skynet/lualib/* $(BUILD_LUALIB_DIR)
 	cp -r 3rd/skynet/luaclib/* $(BUILD_LUACLIB_DIR)
 
