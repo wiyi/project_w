@@ -1,6 +1,10 @@
-root = "/root/work/project_w/server_w/"
-skynet = "/root/work/project_w/skynet/"
-luaservice = root.."service/?.lua;"..project_root.."service/?.lua;"..project_root.."service/manager/?.lua"
-lualoader = root .. "lualib/loader.lua"
-lua_path = root.."lualib/?.lua;"..root.."lualib/?/init.lua;"..project_root.."lualib/?.lua"
-lua_cpath = root .. "luaclib/?.so;"..project_root.."luaclib/?.so"
+root = "./"
+
+outdir = root .. "build/"
+
+luaservice = root.."service/?.lua;"..root.."service/?/main.lua;" ..outdir.."service/?.lua;"
+lua_path = root.."lualib/?.lua;" ..outdir.."lualib/?.lua;"
+lua_cpath = root.."luaclib/?.so;" ..outdir.."luaclib/?.so"
+cpath = root.."cservice/?.so;" ..outdir.."cservice/?.so"
+lualoader = outdir.."lualib/loader.lua"
+preload = root.."lualib/base/preload.lua"
