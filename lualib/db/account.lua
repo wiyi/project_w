@@ -23,7 +23,7 @@ function M.load (name)
 	return acc
 end
 
-function account.create (id, name, password)
+function M.create (id, name, password)
 	assert (id and name and #name < 24 and password and #password < 24, "invalid argument")
 	
 	local connection, key = make_key (name)
