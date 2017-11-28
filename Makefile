@@ -61,6 +61,9 @@ pbc:
 	cd 3rd/pbc && $(MAKE)
 	cd 3rd/pbc/binding/lua53 && $(MAKE)
 
+$(BUILD_LUACLIB_DIR)/lfs.so: 3rd/luafilesystem/src/lfs.c | $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+
 $(BUILD_LUACLIB_DIR)/protobuf.so: 3rd/pbc/binding/lua53/pbc-lua53.c | $(BUILD_LUACLIB_DIR)
 	cd 3rd/pbc && make
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $@ -I 3rd/pbc/ -L 3rd/pbc/build/ -lpbc
