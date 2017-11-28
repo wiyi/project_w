@@ -86,4 +86,4 @@ cleanall:
 
 proto:
 	protoc --descriptor_set_out  ${BUILD_PROTO_DIR}/login.pb proto/login.proto
-	protoc --descriptor_set_out  ${BUILD_PROTO_DIR}/login.pb proto/login.proto
+	protoc --descriptor_set_out  ${BUILD_PROTO_DIR}/msg.pb proto/msg.proto
