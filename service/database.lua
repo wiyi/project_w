@@ -20,7 +20,7 @@ local function init()
 	local table = ""
 	for i = 1, count do
 		table = config.tables[i]
-		module_init (table.name, require table.path)
+		module_init (table.name, require(table.path))
 	end
 end
 
