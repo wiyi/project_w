@@ -2,7 +2,8 @@ local config = {}
 
 config.pb_files = 
 {
-	"./proto/login.pb",
+	"./build/proto/login.pb",
+	"./build/proto/msg.pb",
 }
 
 return config
