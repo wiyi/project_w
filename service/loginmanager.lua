@@ -1,16 +1,12 @@
 local skynet = require "skynet"
 local socket = require "skynet.socket"
-
 local log = require "helper.log"
 local config = require "config.base"
 
-
-local session_id = 1
 --logind列表
 local logind_list = {}
 --logind数量
 local logind_count = 1
-local gameserver = {}
 
 --CMD相关--
 local CMD = {}
@@ -30,7 +26,7 @@ function CMD.open (conf)
 
 	log.noticef ("listen on %s:%d", host, port)
 
-	--负载均衡？--
+	--均衡？--
 	local balance = 1
 	socket.start (sock, function (fd, addr)
 		local s = logind_list[balance]
@@ -39,25 +35,6 @@ function CMD.open (conf)
 
 		skynet.call (s, "lua", "auth", fd, addr)
 	end)
-end
-
-function CMD.save_session (account, key, challenge)
-	session = session_id
-	session_id = session_id + 1
-
-	s = slave[(session % logind_count) + 1]
-	skynet.call (s, "lua", "save_session", session, account, key, challenge)
-	return session
-end
-
-function CMD.challenge (session, challenge)
-	s = slave[(session % logind_count) + 1]
-	return skynet.call (s, "lua", "challenge", session, challenge)
-end
-
-function CMD.verify (session, token)
-	local s = slave[(session % logind_count) + 1]
-	return skynet.call (s, "lua", "verify", session, token)
 end
 
 skynet.start (function ()

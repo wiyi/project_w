@@ -20,9 +20,22 @@ local database
 local host
 
 local connection = {}
-local saved_session = {}
-
-local slaved = {}
+--验证帐号密码------------------------------------------
+local function acc_verify(info)
+	--TODO 去帐号服务器验证(暂时默认通过)
+	if(true) then
+		local account = skynet.call (database, "lua", "account", "load", info.name) or error ("load account " .. info.name .. " failed")
+		local id = tonumber (account.id)
+		if not id then
+			--新帐号
+			id = skynet.call (database, "lua", "center", "genid") or error ("center genid failed")
+			account.id = skynet.call (database, "lua", "account", "create", id, info.name, info.password) or error (string.format ("create account %s/%d failed", info.name, id))
+		end
+		--step5:s2c登录成功
+	else
+		send_msg (fd,"Login.Error",{code = 200})--帐号密码错误				
+	end
+end
 
 --socket相关------------------------------------------
 local function close (fd)
@@ -108,64 +121,14 @@ function CMD.auth (fd, addr)
 			name, msg = read_msg_encrypt (fd)
 			assert (name == "Login.Signin" and msg, "Login.Signin Error")
 			log.errf("step4:c2s Login.Signin:%s,%s",msg.name,msg.password)
-			--去数据库读取帐号信息
-			local account = skynet.call (database, "lua", "get", "account", msg.name) or error ("load account " .. msg.name .. " failed")
-			if(account.id ~= nil and account.password == msg.password) then
-				--step5:s2c登录成功
-				log.errf("login ok:%s",name)
-			else
-				send_msg (fd,"Login.Error",{code = 200})--帐号密码错误				
-			end
+			--帐号验证
+			acc_verify(msg)
 		else
 			send_msg (fd,"Login.Error",{code = 100})--版本验证错误
 		end
 	end
 
-	assert (name == "challenge")
-	assert (args and args.session and args.challenge)
-
-	local token, challenge = skynet.call (lmanager, "lua", "challenge", args.session, args.challenge)
-	assert (token and challenge)
-
-	local msg = response {
-			token = token,
-			challenge = challenge,
-	}
-	send_msg (fd, msg)
-
 	close (fd)
-end
-
-function CMD.save_session (session, account, key, challenge)
-	saved_session[session] = { account = account, key = key, challenge = challenge }
-	skynet.timeout (session_expire_time, function ()
-		local t = saved_session[session]
-		if t and t.key == key then
-			saved_session[session] = nil
-		end
-	end)
-end
-
-function CMD.challenge (session, secret)
-	local t = saved_session[session] or error ()
-
-	local text = aes.decrypt (secret, t.key) or error ()
-	assert (text == t.challenge)
-
-	t.token = srp.random ()
-	t.challenge = srp.random ()
-
-	return t.token, t.challenge
-end
-
-function CMD.verify (session, secret)
-	local t = saved_session[session] or error ()
-
-	local text = aes.decrypt (secret, t.key) or error ()
-	assert (text == t.token)
-	t.token = nil
-
-	return t.account
 end
 
 --start------------------------------------------

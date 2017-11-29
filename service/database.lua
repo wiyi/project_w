@@ -3,6 +3,7 @@ local redis = require "skynet.db.redis"
 local log = require "helper.log"
 local config = require "config.db"
 
+local center
 local centerdb
 --不同的table放在不同的subdb里面，目前只有1个
 local subdb = {}
@@ -21,6 +22,10 @@ local function module_init (name, mod)
 end
 --init
 local function init()
+	--init center
+	center = require("db.center")
+	center.init(centerdb)
+	--init other
 	local count = #config.tables
 	local table
 	for i = 1, count do
@@ -41,7 +46,12 @@ skynet.start (function ()
 	end
 
 	skynet.dispatch ("lua", function (_, _, mod, cmd, ...)
-		local m = MODULE[mod]
+		local m
+		if(mod == "center")then
+			m = center
+		else
+			m = MODULE[mod]
+		end
 		if not m then
 			return skynet.ret ()
 		end
