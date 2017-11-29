@@ -1,5 +1,5 @@
 local skynet = require "skynet"
-local socket = require "socket"
+local socket = require "skynet.socket"
 
 local crypt = require "skynet.crypt"
 
@@ -39,7 +39,7 @@ end
 local function read_msg (fd)
 	local s = read (fd, 2)
 	local size = s:byte(1) * 256 + s:byte(2)
-    local data = read (fd, size)
+    	local data = read (fd, size)
 	local name, msg = protopack.unpack(data)
 end
 
@@ -52,7 +52,7 @@ end
 local function read_msg_encrypt (fd)
 	local s = read (fd, 2)
 	local size = s:byte(1) * 256 + s:byte(2)
-    local data = read (fd, size)
+    	local data = read (fd, size)
 	local name, msg = protopack.unpack(data)
 end
 

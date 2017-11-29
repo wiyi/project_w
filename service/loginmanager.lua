@@ -1,5 +1,5 @@
 local skynet = require "skynet"
-local socket = require "socket"
+local socket = require "skynet.socket"
 
 local log = require "helper.log"
 local config = require "config.base"
@@ -16,7 +16,7 @@ local gameserver = {}
 local CMD = {}
 
 --open--
-function CMD.open (conf)
+function CMD.open (conf)	
 	for i = 1, conf.count do
 		local s = skynet.newservice ("logind")
 		skynet.call (s, "lua", "init", skynet.self (), i, conf)
@@ -33,7 +33,7 @@ function CMD.open (conf)
 	--负载均衡？--
 	local balance = 1
 	socket.start (sock, function (fd, addr)
-		local s = slave[balance]
+		local s = logind_list[balance]
 		balance = balance + 1
 		if balance > logind_count then balance = 1 end
 
