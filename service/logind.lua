@@ -21,7 +21,7 @@ local host
 
 local connection = {}
 --验证帐号密码------------------------------------------
-local function acc_verify(info)
+local function acc_verify(fd,info)
 	--TODO 去帐号服务器验证(暂时默认通过)
 	if(true) then
 		local account = skynet.call (database, "lua", "account", "load", info.name) or error ("load account " .. info.name .. " failed")
@@ -32,6 +32,8 @@ local function acc_verify(info)
 			account.id = skynet.call (database, "lua", "account", "create", id, info.name, info.password) or error (string.format ("create account %s/%d failed", info.name, id))
 		end
 		--step5:s2c登录成功
+		agents[fd] = skynet.newservice("agent")
+		skynet.call(agents[fd], "lua", "start", gate, skynet.self(), fd, account)
 	else
 		send_msg (fd,"Login.Error",{code = 200})--帐号密码错误				
 	end
@@ -122,7 +124,7 @@ function CMD.auth (fd, addr)
 			assert (name == "Login.Signin" and msg, "Login.Signin Error")
 			log.errf("step4:c2s Login.Signin:%s,%s",msg.name,msg.password)
 			--帐号验证
-			acc_verify(msg)
+			acc_verify(fd,msg)
 		else
 			send_msg (fd,"Login.Error",{code = 100})--版本验证错误
 		end

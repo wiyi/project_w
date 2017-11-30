@@ -8,12 +8,12 @@ function M.pack(name, msg)
 	local buf = skynet.call("pbc", "lua", "encode", name, msg)
 	local id = message.getid(name)
 	local len = 2 + 2 + #buf
-	return string.pack(">HHs2", len, id, buf)
+	return string.pack("<HHs2", len, id, buf)
 end
 
 --id(ushort)--data--
 function M.unpack(data)
-	local id, buf = string.unpack(">Hs2", data)
+	local id, buf = string.unpack("<Hs2", data)
 	local name = message.getname(id)
 	util.print_buff(buf)
 	local msg = skynet.call("pbc", "lua", "decode", name, buf)

@@ -3,6 +3,8 @@ local skynet = require "skynet"
 local CMD = {}
 local SOCKET = {}
 local gate
+local pool = {}
+
 local agents = {}
 
 --service start------------------------------------------
